@@ -2,6 +2,7 @@ package com.williamsilva.algafoodapi.infrastructure;
 
 import com.williamsilva.algafoodapi.domain.model.Cozinha;
 import com.williamsilva.algafoodapi.domain.repository.CozinhaRepository;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,6 +36,11 @@ public class CozinhaRepositoryImpl implements CozinhaRepository {
     @Transactional
     public void remover(Long id) {
         Cozinha cozinha = manager.find(Cozinha.class, id);
+
+        if (cozinha == null) {
+            throw new EmptyResultDataAccessException(1);
+        }
+
         manager.remove(cozinha);
     }
 }
