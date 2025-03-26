@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/cidades")
@@ -33,17 +34,18 @@ public class CidadeController {
 
     @GetMapping
     public List<Cidade> listar() {
-        return cidadeRepository.listar();
+        return cidadeRepository.findAll();
     }
 
     @GetMapping("{id}")
     public ResponseEntity<Cidade> buscar(@PathVariable("id") Long cidadeId) {
-        Cidade cidade = cidadeRepository.buscar(cidadeId);
+        Optional<Cidade> cidade = cidadeRepository.findById(cidadeId);
 
-        if (cidade == null) {
+        if (cidade.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(cidade);
+
+        return ResponseEntity.ok(cidade.get());
     }
 
     @PostMapping
@@ -59,16 +61,16 @@ public class CidadeController {
 
     @PutMapping("{id}")
     public ResponseEntity<?> atualizar(@PathVariable("id") Long cidadeId, @RequestBody Cidade cidade) {
-        Cidade cidadeAtual = cidadeRepository.buscar(cidadeId);
+        Optional<Cidade> cidadeAtual = cidadeRepository.findById(cidadeId);
 
-        if (cidadeAtual == null) {
+        if (cidadeAtual.isEmpty()) {
             return ResponseEntity.badRequest().build();
         }
 
-        BeanUtils.copyProperties(cidade, cidadeAtual, "id");
+        BeanUtils.copyProperties(cidade, cidadeAtual.get(), "id");
 
         try {
-            cidade = cadastroCidadeService.salvar(cidade);
+            cidade = cadastroCidadeService.salvar(cidadeAtual.get());
             return ResponseEntity.status(HttpStatus.CREATED).body(cidade);
 
         } catch (EntidadeNaoEncontradaException e) {
