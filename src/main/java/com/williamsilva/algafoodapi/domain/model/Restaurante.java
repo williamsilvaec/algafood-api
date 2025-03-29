@@ -3,6 +3,7 @@ package com.williamsilva.algafoodapi.domain.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -30,6 +31,10 @@ public class Restaurante {
 
     @ManyToOne
     private Cozinha cozinha;
+
+    @JsonIgnore
+    @Embedded
+    private Endereco endereco;
 
     @JsonIgnore
     @ManyToMany
@@ -70,6 +75,14 @@ public class Restaurante {
 
     public void setCozinha(Cozinha cozinha) {
         this.cozinha = cozinha;
+    }
+
+    public Endereco getEndereco() {
+        return endereco;
+    }
+
+    public void setEndereco(Endereco endereco) {
+        this.endereco = endereco;
     }
 
     public List<FormaPagamento> getFormasPagamento() {
