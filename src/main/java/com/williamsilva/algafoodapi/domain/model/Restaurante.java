@@ -1,12 +1,19 @@
 package com.williamsilva.algafoodapi.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -23,6 +30,15 @@ public class Restaurante {
 
     @ManyToOne
     private Cozinha cozinha;
+
+    @JsonIgnore
+    @ManyToMany
+    @JoinTable(
+            name = "restaurante_forma_pagamento",
+            joinColumns = @JoinColumn(name = "restaurante_id"),
+            inverseJoinColumns = @JoinColumn(name = "forma_pagamento_id")
+    )
+    List<FormaPagamento> formasPagamento = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -54,6 +70,14 @@ public class Restaurante {
 
     public void setCozinha(Cozinha cozinha) {
         this.cozinha = cozinha;
+    }
+
+    public List<FormaPagamento> getFormasPagamento() {
+        return formasPagamento;
+    }
+
+    public void setFormasPagamento(List<FormaPagamento> formasPagamento) {
+        this.formasPagamento = formasPagamento;
     }
 
     @Override
