@@ -1,33 +1,38 @@
 package com.williamsilva.algafoodapi.domain.service;
 
-import com.williamsilva.algafoodapi.domain.exception.EntidadeNaoEncontradaException;
+import com.williamsilva.algafoodapi.domain.exception.RestauranteNaoEncontradoException;
 import com.williamsilva.algafoodapi.domain.model.Cozinha;
 import com.williamsilva.algafoodapi.domain.model.Restaurante;
-import com.williamsilva.algafoodapi.domain.repository.CozinhaRepository;
 import com.williamsilva.algafoodapi.domain.repository.RestauranteRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import java.util.List;
 
 @Service
 public class CadastroRestauranteService {
 
-    @Autowired
-    private RestauranteRepository restauranteRepository;
+    private final RestauranteRepository restauranteRepository;
+    private final CadastroCozinhaService cadastroCozinhaService;
 
-    @Autowired
-    private CozinhaRepository cozinhaRepository;
+    public CadastroRestauranteService(RestauranteRepository restauranteRepository,
+                                      CadastroCozinhaService cadastroCozinhaService) {
+        this.restauranteRepository = restauranteRepository;
+        this.cadastroCozinhaService = cadastroCozinhaService;
+    }
+
+    public Restaurante buscarOuFalhar(Long restauranteId) {
+        return restauranteRepository.findById(restauranteId)
+                .orElseThrow(() -> new RestauranteNaoEncontradoException(restauranteId));
+    }
+
+    public List<Restaurante> buscarTodos() {
+        return restauranteRepository.findAll();
+    }
 
     public Restaurante salvar(Restaurante restaurante) {
         Long cozinhaId = restaurante.getCozinha().getId();
-        Optional<Cozinha> cozinha = cozinhaRepository.findById(cozinhaId);
-
-        if (cozinha.isEmpty()) {
-            throw new EntidadeNaoEncontradaException(
-                    String.format("Não existe cadastro de cozinha com código %d", cozinhaId));
-        }
-
+        Cozinha cozinha = cadastroCozinhaService.buscarOuFalhar(cozinhaId);
+        restaurante.setCozinha(cozinha);
         return restauranteRepository.save(restaurante);
     }
 }

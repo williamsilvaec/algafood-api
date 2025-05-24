@@ -21,6 +21,10 @@ public class Cidade {
     @JoinColumn(name = "estado_id")
     private Estado estado;
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public Long getId() {
         return id;
     }
