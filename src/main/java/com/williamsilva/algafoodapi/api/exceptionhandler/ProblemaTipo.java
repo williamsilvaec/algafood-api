@@ -3,8 +3,9 @@ package com.williamsilva.algafoodapi.api.exceptionhandler;
 public enum ProblemaTipo {
 
     ENTIDADE_NAO_ENCONTRADA("/entidade-nao-encontrada", "Entidade não encontrada"),
-    ENTIDADE_EM_USO("/entidade-em-uso", "Entidade em uso"),
+    RECURSO_EM_USO("/recurso-em-uso", "Recurso em uso"),
     ERRO_NEGOCIO("/erro-negocio", "Violação de regra de negócio"),
+    PARAMETRO_INVALIDO("/parametro-invalido", "Parâmetro inválido"),
     MENSAGEM_INCOMPREENSIVEL("/mensagem-incompreensivel", "Mensagem incompreensível");
 
     private final String titulo;
