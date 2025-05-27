@@ -6,6 +6,7 @@ public enum ProblemaTipo {
     RECURSO_EM_USO("/recurso-em-uso", "Recurso em uso"),
     ERRO_NEGOCIO("/erro-negocio", "Violação de regra de negócio"),
     PARAMETRO_INVALIDO("/parametro-invalido", "Parâmetro inválido"),
+    ERRO_SISTEMA("/erro-sistema", "Erro interno do sistema"),
     MENSAGEM_INCOMPREENSIVEL("/mensagem-incompreensivel", "Mensagem incompreensível");
 
     private final String titulo;

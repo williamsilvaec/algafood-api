@@ -26,9 +26,7 @@ import java.util.stream.Collectors;
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(EntidadeNaoEncontradaException.class)
-    public ResponseEntity<Object> tratarEntidadeNaoEncontradaException(EntidadeNaoEncontradaException ex,
-                                                                       WebRequest request) {
-
+    public ResponseEntity<Object> handleEntidadeNaoEncontrada(EntidadeNaoEncontradaException ex, WebRequest request) {
         HttpStatus status = HttpStatus.NOT_FOUND;
         ProblemaTipo problemaTipo = ProblemaTipo.ENTIDADE_NAO_ENCONTRADA;
         String detalhe = ex.getMessage();
@@ -39,7 +37,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(EntidadeEmUsoException.class)
-    public ResponseEntity<Object> tratarEntidadeEmUsoException(EntidadeEmUsoException ex, WebRequest request) {
+    public ResponseEntity<Object> handleEntidadeEmUso(EntidadeEmUsoException ex, WebRequest request) {
         HttpStatus status = HttpStatus.CONFLICT;
         ProblemaTipo problemaTipo = ProblemaTipo.RECURSO_EM_USO;
         String detalhe = ex.getMessage();
@@ -50,13 +48,27 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(NegocioException.class)
-    public ResponseEntity<Object> tratarNegocioException(NegocioException ex, WebRequest request) {
+    public ResponseEntity<Object> handleNegocio(NegocioException ex, WebRequest request) {
         HttpStatus status = HttpStatus.BAD_REQUEST;
         ProblemaTipo problemaTipo = ProblemaTipo.ERRO_NEGOCIO;
         String detalhe = ex.getMessage();
 
         Problema problema = criarProblemaBuilder(status, problemaTipo, detalhe).build();
 
+        return handleExceptionInternal(ex, problema, new HttpHeaders(), status, request);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Object> handleUncaught(Exception ex, WebRequest request) {
+        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+        ProblemaTipo problemaTipo = ProblemaTipo.ERRO_SISTEMA;
+        String detalhe = "Ocorreu um erro interno inesperado no sistema. "
+                + "Tente novamente e se o problema persistir, entre em contato "
+                + "com o administrador do sistema.";
+
+        ex.printStackTrace();
+
+        Problema problema = criarProblemaBuilder(status, problemaTipo, detalhe).build();
         return handleExceptionInternal(ex, problema, new HttpHeaders(), status, request);
     }
 
