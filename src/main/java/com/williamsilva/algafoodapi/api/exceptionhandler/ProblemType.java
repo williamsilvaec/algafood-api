@@ -1,6 +1,6 @@
 package com.williamsilva.algafoodapi.api.exceptionhandler;
 
-public enum ProblemaTipo {
+public enum ProblemType {
 
     ENTIDADE_NAO_ENCONTRADA("/entidade-nao-encontrada", "Entidade não encontrada"),
     RECURSO_EM_USO("/recurso-em-uso", "Recurso em uso"),
@@ -12,7 +12,7 @@ public enum ProblemaTipo {
     private final String titulo;
     private final String uri;
 
-    ProblemaTipo(String caminho, String titulo) {
+    ProblemType(String caminho, String titulo) {
         this.uri = "https://algafood.com.br" + caminho;
         this.titulo = titulo;
     }
